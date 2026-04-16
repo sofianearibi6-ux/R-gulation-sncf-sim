@@ -1,0 +1,600 @@
+:root {
+    --bg-color: #0d1117;
+    --panel-bg: #161b22;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --accent: #58a6ff;
+    --track-color: #484f58;
+    --border-color: #30363d;
+
+    --signal-red: #ff4a4a;
+    --signal-yellow: #ffb845;
+    --signal-green: #3fb950;
+    --signal-off: #21262d;
+    --signal-case: #1f2328;
+
+    --route-active: #4aff8b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 1.5rem 2rem;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #58a6ff, #996cf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* MENU VIEW */
+#main-menu {
+    display: none;
+    flex-direction: row;
+    gap: 2rem;
+    margin-top: 3rem;
+    max-width: 900px;
+}
+
+#main-menu.active {
+    display: flex;
+}
+
+.menu-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    flex: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(88, 166, 255, 0.1);
+}
+
+.menu-card h2 {
+    font-size: 1.4rem;
+    color: white;
+}
+
+.menu-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.menu-card .tag {
+    align-self: flex-start;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background: #21262d;
+    color: var(--text-secondary);
+}
+
+.menu-card .tag.highlight {
+    background: rgba(153, 108, 241, 0.2);
+    color: #996cf1;
+}
+
+/* GAME VIEW */
+#game-view {
+    display: none;
+    width: 100%;
+    max-width: 1600px;
+    flex-direction: column;
+    gap: 1rem;
+    height: 80vh;
+}
+
+#game-view.active {
+    display: flex;
+}
+
+#controls {
+    display: flex;
+    gap: 1rem;
+    background: var(--panel-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.control-group.hidden {
+    display: none;
+}
+
+button {
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #2ea043;
+    transform: translateY(-1px);
+}
+
+#btn-back {
+    background: #21262d;
+    border: 1px solid var(--border-color);
+}
+
+#btn-back:hover {
+    background: #30363d;
+}
+
+#toggle-manual.active {
+    background: #8957e5;
+    border-color: #8957e5;
+}
+
+#status-panel {
+    margin-left: auto;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    background: #010409;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+
+/* SCOREBOARD */
+#score-board {
+    display: none;
+    /* Toggle via JS */
+    align-self: center;
+    gap: 2rem;
+    background: #161b22;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    margin-bottom: -1rem;
+    z-index: 10;
+}
+
+
+
+#score-board.active {
+    display: flex;
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.score-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--route-active);
+    text-shadow: 0 0 10px rgba(74, 255, 139, 0.3);
+    transition: color 0.3s;
+}
+
+.score-value.danger {
+    color: var(--signal-red);
+    text-shadow: 0 0 10px rgba(255, 74, 74, 0.4);
+}
+
+.score-value.warning {
+    color: var(--signal-yellow);
+    text-shadow: 0 0 10px rgba(255, 184, 69, 0.4);
+}
+
+/* GAME CONTAINER */
+#game-main-area {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex: 1;
+    overflow: hidden;
+}
+
+#game-container {
+    flex: 3;
+    background: #010409;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#railway-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* TCO Track Styles */
+.track {
+    stroke: var(--track-color);
+    stroke-width: 8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s, stroke-width 0.3s;
+}
+
+/* Glowing locked route */
+.tco-track-locked {
+    stroke: white;
+    stroke-width: 10;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    z-index: 10;
+}
+
+/* Red Occupied route (Transit) */
+.tco-track-occupied {
+    stroke: #ff2a2a;
+    stroke-width: 10;
+    filter: drop-shadow(0 0 10px rgba(255, 42, 42, 1));
+    z-index: 20;
+}
+
+.canton-line {
+    stroke: #8b949e;
+    stroke-width: 1;
+    stroke-dasharray: 5, 5;
+}
+
+.canton-text {
+    fill: var(--text-secondary);
+    font-size: 14px;
+    font-family: 'Roboto Mono', monospace;
+    text-anchor: middle;
+}
+
+/* Signal styling */
+.signal-bg {
+    fill: var(--signal-case);
+    stroke: var(--border-color);
+    stroke-width: 2;
+    rx: 6;
+}
+
+.signal-pole {
+    stroke: var(--border-color);
+    stroke-width: 4;
+}
+
+.light {
+    fill: var(--signal-off);
+    transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+.light.red {
+    fill: var(--signal-red);
+    filter: drop-shadow(0 0 6px var(--signal-red));
+}
+
+.light.yellow {
+    fill: var(--signal-yellow);
+    filter: drop-shadow(0 0 6px var(--signal-yellow));
+}
+
+.light.green {
+    fill: var(--signal-green);
+    filter: drop-shadow(0 0 6px var(--signal-green));
+}
+
+.light.white {
+    fill: #ffffff;
+    filter: drop-shadow(0 0 8px #ffffff);
+}
+
+.signal-plate {
+    fill: #000;
+    stroke: #fff;
+    stroke-width: 1;
+}
+
+.signal-label {
+    fill: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    text-anchor: middle;
+}
+
+.train-group {
+    /* transition: transform 0.05s linear; */
+}
+
+/* Itinerary Buttons (PRS) */
+.btn-itinerary {
+    fill: #1f2328;
+    stroke: var(--accent);
+    stroke-width: 2;
+    rx: 4;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-itinerary:hover {
+    fill: #30363d;
+}
+
+.btn-itinerary.selected {
+    fill: var(--accent);
+    stroke: #fff;
+}
+
+.btn-text {
+    fill: #c9d1d9;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+    text-anchor: middle;
+}
+
+.btn-itinerary.selected+.btn-text {
+    fill: #000;
+}
+
+/* TRAIN LABEL */
+.train-id-text {
+    fill: white;
+    font-size: 14px;
+    font-weight: 800;
+    font-family: 'Roboto Mono', monospace;
+    text-shadow: 1px 1px 2px black;
+    pointer-events: none;
+    text-anchor: middle;
+}
+
+/* CODIS PANEL (Tableau de bord / TCO) */
+#codis-panel {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 380px;
+    background: #1e242c;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+    z-index: 100;
+}
+
+#codis-header {
+    background: #0d1117;
+    padding: 1rem;
+    font-weight: 800;
+    text-align: center;
+    border-bottom: 2px solid var(--route-active);
+    color: var(--route-active);
+    letter-spacing: 2px;
+    border-radius: 12px 12px 0 0;
+}
+
+#timetable-container {
+    padding: 1rem;
+    background: #13171c;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+#timetable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+#timetable th,
+#timetable td {
+    padding: 8px 5px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#timetable th {
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+#timetable td {
+    color: var(--text-primary);
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* PRS STATE PANEL (TCO Interactivity) */
+#prs-state-panel {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    background: rgba(10, 15, 20, 0.95);
+    border-radius: 0 0 12px 12px;
+    border-top: 1px solid #333;
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+#prs-state-panel.prs-idle {
+    box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.1);
+}
+
+#prs-state-panel.prs-origin-selected {
+    box-shadow: inset 0 0 20px rgba(255, 184, 69, 0.3);
+    border-top-color: var(--signal-yellow);
+}
+
+#prs-state-panel h3 {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+#prs-instruction {
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--accent);
+}
+
+#prs-selection-display {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #010409;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+#prs-orig-label { color: var(--signal-yellow); }
+#prs-dest-label { color: #fff; }
+.prs-arrow { color: var(--text-secondary); }
+
+#btn-cancel-route {
+    background: rgba(255, 74, 74, 0.1);
+    color: var(--signal-red);
+    border: 1px solid var(--signal-red);
+    padding: 0.8rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#btn-cancel-route:hover {
+    background: var(--signal-red);
+    color: #000;
+}
+
+/* Clickable Signals on SVG */
+.clickable-signal {
+    cursor: pointer;
+}
+
+.clickable-signal:hover .signal-bg {
+    fill: #30363d;
+    stroke: white;
+}
+
+.clickable-signal.origin-active .signal-bg {
+    fill: rgba(255, 184, 69, 0.2);
+    stroke: var(--signal-yellow);
+    stroke-width: 3;
+    animation: pulse-yellow 1s infinite alternate;
+}
+
+@keyframes pulse-yellow {
+    from { filter: drop-shadow(0 0 2px var(--signal-yellow)); }
+    to { filter: drop-shadow(0 0 15px var(--signal-yellow)); }
+}
+
+/* Destination pulsing when Origin is selected */
+.clickable-signal.dest-target .signal-bg {
+    stroke: white;
+    stroke-width: 2;
+    animation: pulse-white 1s infinite alternate;
+}
+
+@keyframes pulse-white {
+    from { filter: drop-shadow(0 0 2px white); }
+    to { filter: drop-shadow(0 0 15px white); }
+}
+
+/* Pause Overlay */
+#pause-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 500;
+    display: none; /* flexible toggle via js */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+#pause-overlay h2 {
+    font-size: 4rem; 
+    color: #ffb845; 
+    text-shadow: 0 0 20px #ffb845;
+    margin-bottom: 1rem;
+}

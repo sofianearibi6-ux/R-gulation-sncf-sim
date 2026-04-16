@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur Réseau Ferroviaire</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>SNCF x Simulation</h1>
+        <p id="subtitle">Choisissez votre mode de jeu</p>
+    </header>
+    
+    <main>
+        <!-- MAIN MENU -->
+        <div id="main-menu" class="active">
+            <div class="menu-card" id="btn-mode-bal">
+                <h2>Mode BAL</h2>
+                <p>Simulation du Block Automatique Lumineux sur une ligne droite.</p>
+                <div class="tag">Régulation automatique</div>
+            </div>
+            <div class="menu-card" id="btn-mode-prs">
+                <h2>Régulation : Dijon-Ville (TSR)</h2>
+                <p>Gérez le trafic intense de Dijon. Répondez aux conducteurs à la radio et tracez leurs itinéraires.</p>
+                <div class="tag highlight">Radio & Itinéraires</div>
+            </div>
+        </div>
+
+        <!-- GAME VIEW -->
+        <div id="game-view" class="hidden">
+            <div id="controls">
+                <button id="btn-back">Retour au Menu</button>
+                <div id="bal-controls" class="control-group hidden">
+                    <button id="toggle-auto-bal" class="active">Aiguillage Auto: ON</button>
+                </div>
+                <div id="prs-controls" class="control-group hidden">
+                    <!-- Spawns are automatic now -->
+                </div>
+                <div id="status-panel">Prêt</div>
+            </div>
+            
+            <div id="score-board" class="hidden" style="display: none;"></div>
+            
+            <div id="game-main-area">
+                <div id="game-container">
+                    <svg id="railway-svg" viewBox="0 0 3200 800" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                        <!-- Loco Blue (CC 72000 style) -->
+                        <g id="train-loco-blue">
+                            <rect x="-40" y="-14" width="80" height="28" rx="4" fill="#1b4571" stroke="#112d4a" stroke-width="1"/>
+                            <polygon points="-40,-14 -30,-14 -15,-6 -40,-6" fill="#ffffff"/> <!-- White stripe front -->
+                            <rect x="-15" y="-6" width="30" height="12" fill="#ffffff"/> <!-- White stripe middle -->
+                            <polygon points="40,-14 30,-14 15,-6 40,-6" fill="#ffffff"/> <!-- White stripe back -->
+                            <rect x="-35" y="-10" width="10" height="8" rx="1" fill="#111"/> <!-- Window front -->
+                            <rect x="25" y="-10" width="10" height="8" rx="1" fill="#111"/> <!-- Window back -->
+                            <rect x="-10" y="-14" width="20" height="28" fill="#333"/> <!-- Grille central roof -->
+                        </g>
+
+                        <!-- Loco Red (Multiservice/Béton style BB 22200) -->
+                        <g id="train-loco-red">
+                            <rect x="-35" y="-14" width="70" height="28" rx="2" fill="#9e9e9e" stroke="#555" stroke-width="1"/>
+                            <!-- Red block in center -->
+                            <polygon points="-25,-14 25,-14 15,-4 -15,-4" fill="#c62828"/>
+                            <polygon points="-25,14 25,14 15,4 -15,4" fill="#c62828"/>
+                            <rect x="-15" y="-4" width="30" height="8" fill="#c62828"/>
+                            <!-- Yellow border around red block -->
+                            <path d="M -25,-14 L -15,-4 L 15,-4 L 25,-14" fill="none" stroke="#fbc02d" stroke-width="1.5"/>
+                            <path d="M -25,14 L -15,4 L 15,4 L 25,14" fill="none" stroke="#fbc02d" stroke-width="1.5"/>
+                            <rect x="-32" y="-12" width="6" height="24" rx="1" fill="#111"/> <!-- Windshield -->
+                            <rect x="26" y="-12" width="6" height="24" rx="1" fill="#111"/> <!-- Windshield -->
+                        </g>
+
+                        <!-- Passenger Wagon (Grey with yellow stripe) -->
+                        <g id="train-wagon-grey">
+                            <rect x="-60" y="-14" width="120" height="28" rx="2" fill="#b0bec5" stroke="#78909c" stroke-width="1"/>
+                            <rect x="-60" y="-14" width="120" height="4" fill="#ffee58"/>
+                            <rect x="-45" y="-14" width="10" height="28" fill="#e53935"/>
+                            <rect x="35" y="-14" width="10" height="28" fill="#e53935"/>
+                            <rect x="-30" y="-8" width="8" height="16" rx="1" fill="#263238"/>
+                            <rect x="-18" y="-8" width="8" height="16" rx="1" fill="#263238"/>
+                            <rect x="-6" y="-8" width="8" height="16" rx="1" fill="#263238"/>
+                            <rect x="6" y="-8" width="8" height="16" rx="1" fill="#263238"/>
+                            <rect x="18" y="-8" width="8" height="16" rx="1" fill="#263238"/>
+                        </g>
+                    </defs>
+                    
+                        <g id="tracks-layer"></g>
+                        <g id="cantons-layer"></g>
+                        <g id="itinerary-layer"></g>
+                        <g id="overlay-layer"></g> <!-- Traces rouges et jaunes SOUS les trains ! -->
+                        <g id="trains-layer"></g>  <!-- Les trains crantés au-dessus -->
+                        <g id="signals-layer"></g> <!-- Les panneaux en tout premier plan !! -->
+                    </svg>
+                </div>
+
+                <!-- CODIS PANEL -->
+                <div id="codis-panel" class="hidden">
+                    <div id="codis-header">TCO - PR DIJON</div>
+                    
+                    <!-- Timetable incoming trains -->
+                    <div id="timetable-container">
+                        <table id="timetable">
+                            <thead>
+                                <tr>
+                                    <th>HEURE</th>
+                                    <th>TRAIN (SÉRIE)</th>
+                                    <th>PROVENANCE</th>
+                                    <th>DESTINATION DEMANDÉE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timetable-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- PRS State Indicator -->
+                    <div id="prs-state-panel" class="prs-idle">
+                        <h3>SÉQUENCEUR ITINÉRAIRE</h3>
+                        <p id="prs-instruction">CLIQUEZ SUR UN FEU D'ORIGINE POUR COMMENCER</p>
+                        <div id="prs-selection-display">
+                            <span id="prs-orig-label">--</span> 
+                            <span class="prs-arrow">➔</span> 
+                            <span id="prs-dest-label">--</span>
+                        </div>
+                        <button id="btn-cancel-route" class="btn-danger hidden">ANNULER</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Overlay Pause -->
+    <div id="pause-overlay">
+        <h2>EN PAUSE</h2>
+        <p>Appuyez sur ESPACE pour reprendre</p>
+    </div>
+
+    <script src="bal.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
